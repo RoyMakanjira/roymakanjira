@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { Rocket, Target, TrendingUp, Clock, Calendar, Mail, Coffee, Gamepad2, Briefcase } from "lucide-react"
+import { Rocket, Target, TrendingUp, Clock, Calendar, Mail, Coffee, Gamepad2, Briefcase, LinkIcon, RocketIcon } from "lucide-react"
 import {
   LightbulbIcon,
   BarChart3,
@@ -127,49 +127,131 @@ export default function Component() {
           {/* Project Cards */}
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Tesla Campaign Card */}
-            <Card className="overflow-hidden border-0 shadow-xl bg-white">
-              <div className="h-80 bg-gradient-to-br from-purple-400 via-blue-400 to-yellow-300 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/30 via-blue-500/20 to-yellow-400/40" />
-                <div className="absolute top-6 right-6">
-                  <div className="w-20 h-20 bg-white/20 rounded-full backdrop-blur-sm flex items-center justify-center border border-white/30">
-                    <div className="w-10 h-10 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full shadow-lg" />
-                  </div>
-                </div>
-                <div className="absolute bottom-6 left-6">
-                  <div className="w-16 h-16 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/20" />
-                </div>
-              </div>
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Tesla Campaign Launch</h3>
-                <p className="text-gray-600 leading-relaxed text-base">
-                  Tesla is a pioneering electric vehicle and clean energy company founded by Elon Musk. It builds
-                  high-performance electric cars...
-                </p>
-              </CardContent>
-            </Card>
+    <Card className="group h-96 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-lg transition-all duration-300 hover:shadow-xl">
+  {/* --- Image with Gradient Overlay --- */}
+  <div className="relative h-56 w-full overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent z-10" />
+    
+    {/* Project Image (Clickable) */}
+    <a href="https://www.figma.com/proto/D0GfI2Kf3RkWnBsRgt7AcI/Royalty-foods-application?page-id=0%3A1&node-id=57-148&starting-point-node-id=57%3A148&t=SdmB5xxBXHkNPd7G-1" target="_blank" rel="noopener noreferrer">
+      <img
+        src="/food-deli.png"
+        alt="Food Delivery App"
+        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+    </a>
 
-            {/* Grok Strategy Card */}
-            <Card className="overflow-hidden border-0 shadow-xl bg-white">
-              <div className="h-80 bg-gradient-to-br from-teal-300 via-cyan-300 to-blue-300 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-teal-400/40 via-cyan-400/30 to-blue-400/40" />
-                <div className="absolute inset-6">
-                  <div className="w-full h-full border-2 border-white/30 rounded-3xl backdrop-blur-sm" />
-                </div>
-                <div className="absolute inset-12">
-                  <div className="w-full h-full border-2 border-white/20 rounded-2xl backdrop-blur-sm" />
-                </div>
-                <div className="absolute inset-16">
-                  <div className="w-full h-full border border-white/10 rounded-xl backdrop-blur-sm" />
-                </div>
-              </div>
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Grok Brand Strategy</h3>
-                <p className="text-gray-600 leading-relaxed text-base">
-                  Grok is a generative AI chatbot developed by Elon Musk's company, xAI. Launched in November 2023, Grok
-                  is designed to be a...
-                </p>
-              </CardContent>
-            </Card>
+    {/* Decorative Badge (Top-Right) */}
+    <div className="absolute top-4 right-4 z-20">
+      <div className="flex items-center justify-center w-12 h-12 bg-white/90 rounded-full backdrop-blur-sm border border-white">
+        <RocketIcon className="w-5 h-5 text-orange-500" /> {/* Replace with your icon */}
+      </div>
+    </div>
+  </div>
+
+  {/* --- Content with URL Input Option --- */}
+  <CardContent className="p-6">
+    <h3 className="text-2xl font-bold text-gray-900 mb-2">Food Delivery Experience</h3>
+    <p className="text-gray-600 mb-4">
+      Discover restaurants, customize orders, and track deliveries in real-time.
+    </p>
+
+    {/* Project URL Input/Dynamic Link */}
+    <div className="mt-4 space-y-3">
+      {/* Option 1: Static Link (Visible URL) */}
+      <div className="flex items-center">
+        <LinkIcon className="w-4 h-4 text-gray-400 mr-2" />
+        <a 
+          href="https://www.figma.com/proto/D0GfI2Kf3RkWnBsRgt7AcI/Royalty-foods-application?page-id=0%3A1&node-id=57-148&starting-point-node-id=57%3A148&t=SdmB5xxBXHkNPd7G-1" 
+          target="_blank" 
+          className="text-sm text-blue-600 hover:underline truncate"
+        >
+          Live Demo
+        </a>
+      </div>
+
+      {/* Option 2: Input Field (Editable URL) */}
+      {/* <input
+        type="text"
+        placeholder="Paste project URL"
+        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        value={projectUrl}
+        onChange={(e) => setProjectUrl(e.target.value)}
+      /> */}
+
+      {/* CTA Button */}
+      <button 
+        onClick={() => window.open('https://www.figma.com/proto/D0GfI2Kf3RkWnBsRgt7AcI/Royalty-foods-application?page-id=0%3A1&node-id=57-148&starting-point-node-id=57%3A148&t=SdmB5xxBXHkNPd7G-1', '_blank')}
+        className="w-full px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+      >
+        Live Demo →
+      </button>
+    </div>
+  </CardContent>
+</Card>
+    <Card className="group h-96 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-lg transition-all duration-300 hover:shadow-xl">
+  {/* --- Image with Gradient Overlay --- */}
+  <div className="relative h-56 w-full overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent z-10" />
+    
+    {/* Project Image (Clickable) */}
+    <a href="https://www.figma.com/proto/D0GfI2Kf3RkWnBsRgt7AcI/Royalty-foods-application?page-id=0%3A1&node-id=57-148&starting-point-node-id=57%3A148&t=SdmB5xxBXHkNPd7G-1" target="_blank" rel="noopener noreferrer">
+      <img
+        src="/schweppes.png"
+        alt="Food Delivery App"
+        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+    </a>
+
+    {/* Decorative Badge (Top-Right) */}
+    <div className="absolute top-4 right-4 z-20">
+      <div className="flex items-center justify-center w-12 h-12 bg-white/90 rounded-full backdrop-blur-sm border border-white">
+        <RocketIcon className="w-5 h-5 text-orange-500" /> {/* Replace with your icon */}
+      </div>
+    </div>
+  </div>
+
+  {/* --- Content with URL Input Option --- */}
+  <CardContent className="p-6">
+    <h3 className="text-2xl font-bold text-gray-900 mb-2">Schweppes</h3>
+    <p className="text-gray-600 mb-4">
+      What made Schweppes Content Marketing strategy succefful ?
+    </p>
+
+    {/* Project URL Input/Dynamic Link */}
+    <div className="mt-4 space-y-3">
+      {/* Option 1: Static Link (Visible URL) */}
+      <div className="flex items-center">
+        <LinkIcon className="w-4 h-4 text-gray-400 mr-2" />
+        <a 
+          href="https://www.canva.com/design/DAGsLxhf-yY/ICqxHiXIpnh8NKvQ7XZ0Sw/edit?utm_content=DAGsLxhf-yY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" 
+          target="_blank" 
+          className="text-sm text-blue-600 hover:underline truncate"
+        >
+          Full Report
+        </a>
+      </div>
+
+      {/* Option 2: Input Field (Editable URL) */}
+      {/* <input
+        type="text"
+        placeholder="Paste project URL"
+        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        value={projectUrl}
+        onChange={(e) => setProjectUrl(e.target.value)}
+      /> */}
+
+      {/* CTA Button */}
+      <button 
+        onClick={() => window.open('https://www.canva.com/design/DAGsLxhf-yY/ICqxHiXIpnh8NKvQ7XZ0Sw/edit?utm_content=DAGsLxhf-yY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton', '_blank')}
+        className="w-full px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+      >
+        Full Report →
+      </button>
+    </div>
+  </CardContent>
+</Card>
+
           </div>
         </section>
 
