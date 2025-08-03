@@ -1,6 +1,11 @@
 "use client"
 
 import Image from "next/image"
+import { useState } from "react"
+import { toast } from "sonner"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Rocket, Target, TrendingUp, Clock, Calendar, Mail, Coffee, Gamepad2, Briefcase, LinkIcon, RocketIcon } from "lucide-react"
@@ -18,7 +23,67 @@ import {
   Instagram,
 } from "lucide-react"
 
+// Validation schema
+const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+})
+
+type FormData = z.infer<typeof formSchema>
+
 export default function Component() {
+  const [honeypot, setHoneypot] = useState("") // Honeypot for spam protection
+  
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+  })
+
+  const onSubmit = async (data: FormData) => {
+    // Skip if honeypot is filled (spam protection)
+    if (honeypot) {
+      toast.success("Message sent successfully!")
+      reset()
+      return
+    }
+
+    const toastId = toast.loading("Sending your message...")
+
+    try {
+      const response = await fetch("/api/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...data, honeypot }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to send message")
+      }
+
+      toast.success("Message sent successfully!", {
+        id: toastId,
+        description: "Thank you for reaching out. I'll get back to you soon.",
+        duration: 5000,
+      })
+      reset()
+    } catch (error) {
+      toast.error("Failed to send message", {
+        id: toastId,
+        description: error instanceof Error ? error.message : "Please try again later",
+        duration: 5000,
+      })
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
@@ -57,7 +122,7 @@ export default function Component() {
               <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden border-4 border-white shadow-xl bg-white">
                 <Image
                   src="/roy.png?height=96&width=96"
-                  alt="Steph Curry"
+                  alt="Roy Makanjira"
                   width={96}
                   height={96}
                   className="w-full h-full object-cover"
@@ -126,198 +191,134 @@ export default function Component() {
 
           {/* Project Cards */}
           <div className="grid lg:grid-cols-2 gap-8">
-            {/* Tesla Campaign Card */}
-    <Card className="group h-96 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-lg transition-all duration-300 hover:shadow-xl">
-  {/* --- Image with Gradient Overlay --- */}
-  <div className="relative h-56 w-full overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent z-10" />
-    
-    {/* Project Image (Clickable) */}
-    <a href="https://www.figma.com/proto/D0GfI2Kf3RkWnBsRgt7AcI/Royalty-foods-application?page-id=0%3A1&node-id=57-148&starting-point-node-id=57%3A148&t=SdmB5xxBXHkNPd7G-1" target="_blank" rel="noopener noreferrer">
-      <img
-        src="/food-deli.png"
-        alt="Food Delivery App"
-        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-      />
-    </a>
+            <Card className="group h-96 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-lg transition-all duration-300 hover:shadow-xl">
+              <div className="relative h-56 w-full overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent z-10" />
+                <a href="https://www.figma.com/proto/D0GfI2Kf3RkWnBsRgt7AcI/Royalty-foods-application?page-id=0%3A1&node-id=57-148&starting-point-node-id=57%3A148&t=SdmB5xxBXHkNPd7G-1" target="_blank" rel="noopener noreferrer">
+                  <img
+                    src="/food-deli.png"
+                    alt="Food Delivery App"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </a>
+                <div className="absolute top-4 right-4 z-20">
+                  <div className="flex items-center justify-center w-12 h-12 bg-white/90 rounded-full backdrop-blur-sm border border-white">
+                    <RocketIcon className="w-5 h-5 text-orange-500" />
+                  </div>
+                </div>
+              </div>
+              <CardContent className="p-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Food Delivery Experience</h3>
+                <p className="text-gray-600 mb-4">
+                  Discover restaurants, customize orders, and track deliveries in real-time.
+                </p>
+                <div className="mt-4 space-y-3">
+                  <div className="flex items-center">
+                    <LinkIcon className="w-4 h-4 text-gray-400 mr-2" />
+                    <a 
+                      href="https://www.figma.com/proto/D0GfI2Kf3RkWnBsRgt7AcI/Royalty-foods-application?page-id=0%3A1&node-id=57-148&starting-point-node-id=57%3A148&t=SdmB5xxBXHkNPd7G-1" 
+                      target="_blank" 
+                      className="text-sm text-blue-600 hover:underline truncate"
+                    >
+                      Live Demo
+                    </a>
+                  </div>
+                  <button 
+                    onClick={() => window.open('https://www.figma.com/proto/D0GfI2Kf3RkWnBsRgt7AcI/Royalty-foods-application?page-id=0%3A1&node-id=57-148&starting-point-node-id=57%3A148&t=SdmB5xxBXHkNPd7G-1', '_blank')}
+                    className="w-full px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+                  >
+                    Live Demo →
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
 
-    {/* Decorative Badge (Top-Right) */}
-    <div className="absolute top-4 right-4 z-20">
-      <div className="flex items-center justify-center w-12 h-12 bg-white/90 rounded-full backdrop-blur-sm border border-white">
-        <RocketIcon className="w-5 h-5 text-orange-500" /> {/* Replace with your icon */}
-      </div>
-    </div>
-  </div>
+            <Card className="group h-96 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-lg transition-all duration-300 hover:shadow-xl">
+              <div className="relative h-56 w-full overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent z-10" />
+                <a href="https://www.canva.com/design/DAGsLxhf-yY/ICqxHiXIpnh8NKvQ7XZ0Sw/edit" target="_blank" rel="noopener noreferrer">
+                  <img
+                    src="/schweppes.png"
+                    alt="Schweppes"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </a>
+                <div className="absolute top-4 right-4 z-20">
+                  <div className="flex items-center justify-center w-12 h-12 bg-white/90 rounded-full backdrop-blur-sm border border-white">
+                    <RocketIcon className="w-5 h-5 text-orange-500" />
+                  </div>
+                </div>
+              </div>
+              <CardContent className="p-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Schweppes</h3>
+                <p className="text-gray-600 mb-4">
+                  What made Schweppes Content Marketing strategy successful?
+                </p>
+                <div className="mt-4 space-y-3">
+                  <div className="flex items-center">
+                    <LinkIcon className="w-4 h-4 text-gray-400 mr-2" />
+                    <a 
+                      href="https://www.canva.com/design/DAGsLxhf-yY/ICqxHiXIpnh8NKvQ7XZ0Sw/edit?utm_content=DAGsLxhf-yY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" 
+                      target="_blank" 
+                      className="text-sm text-blue-600 hover:underline truncate"
+                    >
+                      Full Report
+                    </a>
+                  </div>
+                  <button 
+                    onClick={() => window.open('https://www.canva.com/design/DAGsLxhf-yY/ICqxHiXIpnh8NKvQ7XZ0Sw/edit?utm_content=DAGsLxhf-yY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton', '_blank')}
+                    className="w-full px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+                  >
+                    Full Report →
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
 
-  {/* --- Content with URL Input Option --- */}
-  <CardContent className="p-6">
-    <h3 className="text-2xl font-bold text-gray-900 mb-2">Food Delivery Experience</h3>
-    <p className="text-gray-600 mb-4">
-      Discover restaurants, customize orders, and track deliveries in real-time.
-    </p>
-
-    {/* Project URL Input/Dynamic Link */}
-    <div className="mt-4 space-y-3">
-      {/* Option 1: Static Link (Visible URL) */}
-      <div className="flex items-center">
-        <LinkIcon className="w-4 h-4 text-gray-400 mr-2" />
-        <a 
-          href="https://www.figma.com/proto/D0GfI2Kf3RkWnBsRgt7AcI/Royalty-foods-application?page-id=0%3A1&node-id=57-148&starting-point-node-id=57%3A148&t=SdmB5xxBXHkNPd7G-1" 
-          target="_blank" 
-          className="text-sm text-blue-600 hover:underline truncate"
-        >
-          Live Demo
-        </a>
-      </div>
-
-      {/* Option 2: Input Field (Editable URL) */}
-      {/* <input
-        type="text"
-        placeholder="Paste project URL"
-        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        value={projectUrl}
-        onChange={(e) => setProjectUrl(e.target.value)}
-      /> */}
-
-      {/* CTA Button */}
-      <button 
-        onClick={() => window.open('https://www.figma.com/proto/D0GfI2Kf3RkWnBsRgt7AcI/Royalty-foods-application?page-id=0%3A1&node-id=57-148&starting-point-node-id=57%3A148&t=SdmB5xxBXHkNPd7G-1', '_blank')}
-        className="w-full px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
-      >
-        Live Demo →
-      </button>
-    </div>
-  </CardContent>
-</Card>
-    <Card className="group h-96 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-lg transition-all duration-300 hover:shadow-xl">
-  {/* --- Image with Gradient Overlay --- */}
-  <div className="relative h-56 w-full overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent z-10" />
-    
-    {/* Project Image (Clickable) */}
-    <a href="https://www.canva.com/design/DAGsLxhf-yY/ICqxHiXIpnh8NKvQ7XZ0Sw/edit" target="_blank" rel="noopener noreferrer">
-      <img
-        src="/schweppes.png"
-        alt="Schweppes"
-        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-      />
-    </a>
-
-    {/* Decorative Badge (Top-Right) */}
-    <div className="absolute top-4 right-4 z-20">
-      <div className="flex items-center justify-center w-12 h-12 bg-white/90 rounded-full backdrop-blur-sm border border-white">
-        <RocketIcon className="w-5 h-5 text-orange-500" /> {/* Replace with your icon */}
-      </div>
-    </div>
-  </div>
-
-  {/* --- Content with URL Input Option --- */}
-  <CardContent className="p-6">
-    <h3 className="text-2xl font-bold text-gray-900 mb-2">Schweppes</h3>
-    <p className="text-gray-600 mb-4">
-      What made Schweppes Content Marketing strategy succefful ?
-    </p>
-
-    {/* Project URL Input/Dynamic Link */}
-    <div className="mt-4 space-y-3">
-      {/* Option 1: Static Link (Visible URL) */}
-      <div className="flex items-center">
-        <LinkIcon className="w-4 h-4 text-gray-400 mr-2" />
-        <a 
-          href="https://www.canva.com/design/DAGsLxhf-yY/ICqxHiXIpnh8NKvQ7XZ0Sw/edit?utm_content=DAGsLxhf-yY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" 
-          target="_blank" 
-          className="text-sm text-blue-600 hover:underline truncate"
-        >
-          Full Report
-        </a>
-      </div>
-
-      {/* Option 2: Input Field (Editable URL) */}
-      {/* <input
-        type="text"
-        placeholder="Paste project URL"
-        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        value={projectUrl}
-        onChange={(e) => setProjectUrl(e.target.value)}
-      /> */}
-
-      {/* CTA Button */}
-      <button 
-        onClick={() => window.open('https://www.canva.com/design/DAGsLxhf-yY/ICqxHiXIpnh8NKvQ7XZ0Sw/edit?utm_content=DAGsLxhf-yY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton', '_blank')}
-        className="w-full px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
-      >
-        Full Report →
-      </button>
-    </div>
-  </CardContent>
-</Card>
-    <Card className="group h-96 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-lg transition-all duration-300 hover:shadow-xl">
-  {/* --- Image with Gradient Overlay --- */}
-  <div className="relative h-56 w-full overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent z-10" />
-    
-    {/* Project Image (Clickable) */}
-    <a href="https://www.canva.com/design/DAGq4J1Gx30/o7zARVvh_kJO8HMEvztLWA/edit?utm_content=DAGq4J1Gx30&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank" rel="noopener noreferrer">
-      <img
-        src="/zimgold.png"
-        alt="ZimGold"
-        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-      />
-    </a>
-
-    {/* Decorative Badge (Top-Right) */}
-    <div className="absolute top-4 right-4 z-20">
-      <div className="flex items-center justify-center w-12 h-12 bg-white/90 rounded-full backdrop-blur-sm border border-white">
-        <RocketIcon className="w-5 h-5 text-orange-500" /> {/* Replace with your icon */}
-      </div>
-    </div>
-  </div>
-
-  {/* --- Content with URL Input Option --- */}
-  <CardContent className="p-6">
-    <h3 className="text-2xl font-bold text-gray-900 mb-2">ZimGold</h3>
-    <p className="text-gray-600 mb-4">
-      ZimGold Campaign Strategy
-    </p>
-
-    {/* Project URL Input/Dynamic Link */}
-    <div className="mt-4 space-y-3">
-      {/* Option 1: Static Link (Visible URL) */}
-      <div className="flex items-center">
-        <LinkIcon className="w-4 h-4 text-gray-400 mr-2" />
-        <a 
-          href="https://www.canva.com/design/DAGq4J1Gx30/o7zARVvh_kJO8HMEvztLWA/edit?utm_content=DAGq4J1Gx30&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" 
-          target="_blank" 
-          className="text-sm text-blue-600 hover:underline truncate"
-        >
-          View Link
-        </a>
-      </div>
-
-      {/* Option 2: Input Field (Editable URL) */}
-      {/* <input
-        type="text"
-        placeholder="Paste project URL"
-        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        value={projectUrl}
-        onChange={(e) => setProjectUrl(e.target.value)}
-      /> */}
-
-      {/* CTA Button */}
-      <button 
-        onClick={() => window.open('https://www.canva.com/design/DAGq4J1Gx30/o7zARVvh_kJO8HMEvztLWA/edit?utm_content=DAGq4J1Gx30&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton', '_blank')}
-        className="w-full px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
-      >
-        View Link →
-      </button>
-    </div>
-  </CardContent>
-</Card>
-
+            <Card className="group h-96 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-lg transition-all duration-300 hover:shadow-xl">
+              <div className="relative h-56 w-full overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent z-10" />
+                <a href="https://www.canva.com/design/DAGq4J1Gx30/o7zARVvh_kJO8HMEvztLWA/edit?utm_content=DAGq4J1Gx30&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank" rel="noopener noreferrer">
+                  <img
+                    src="/zimgold.png"
+                    alt="ZimGold"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </a>
+                <div className="absolute top-4 right-4 z-20">
+                  <div className="flex items-center justify-center w-12 h-12 bg-white/90 rounded-full backdrop-blur-sm border border-white">
+                    <RocketIcon className="w-5 h-5 text-orange-500" />
+                  </div>
+                </div>
+              </div>
+              <CardContent className="p-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">ZimGold</h3>
+                <p className="text-gray-600 mb-4">
+                  ZimGold Campaign Strategy
+                </p>
+                <div className="mt-4 space-y-3">
+                  <div className="flex items-center">
+                    <LinkIcon className="w-4 h-4 text-gray-400 mr-2" />
+                    <a 
+                      href="https://www.canva.com/design/DAGq4J1Gx30/o7zARVvh_kJO8HMEvztLWA/edit?utm_content=DAGq4J1Gx30&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" 
+                      target="_blank" 
+                      className="text-sm text-blue-600 hover:underline truncate"
+                    >
+                      View Link
+                    </a>
+                  </div>
+                  <button 
+                    onClick={() => window.open('https://www.canva.com/design/DAGq4J1Gx30/o7zARVvh_kJO8HMEvztLWA/edit?utm_content=DAGq4J1Gx30&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton', '_blank')}
+                    className="w-full px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+                  >
+                    View Link →
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
-        {/* Additional Sections */}
         {/* Skills Section */}
         <section className="mt-32">
           <div className="flex items-center gap-4 mb-16">
@@ -419,7 +420,7 @@ export default function Component() {
                   </div>
                 </div>
                 <p className="text-gray-600 italic">
-                  "Steph's strategic approach to our product launch campaign exceeded all expectations. The creative
+                  "Roy's strategic approach to our product launch campaign exceeded all expectations. The creative
                   direction and execution were flawless, resulting in our most successful launch to date."
                 </p>
               </CardContent>
@@ -437,7 +438,7 @@ export default function Component() {
                   </div>
                 </div>
                 <p className="text-gray-600 italic">
-                  "Working with Steph transformed our marketing approach. Their data-driven strategies and creative
+                  "Working with Roy transformed our marketing approach. Their data-driven strategies and creative
                   campaigns helped us reach new audience segments and significantly improved our conversion rates."
                 </p>
               </CardContent>
@@ -491,29 +492,52 @@ export default function Component() {
 
               <div className="p-8">
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Send me a message</h3>
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+                  {/* Honeypot field - hidden from users */}
+                  <input
+                    type="text"
+                    name="honeypot"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    className="hidden"
+                    autoComplete="off"
+                  />
+
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                       Name
                     </label>
                     <input
-                      type="text"
                       id="name"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent ${
+                        errors.name ? "border-red-500" : "border-gray-300"
+                      }`}
                       placeholder="Your name"
+                      {...register("name")}
                     />
+                    {errors.name && (
+                      <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+                    )}
                   </div>
+
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                       Email
                     </label>
                     <input
-                      type="email"
                       id="email"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                      type="email"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent ${
+                        errors.email ? "border-red-500" : "border-gray-300"
+                      }`}
                       placeholder="your@email.com"
+                      {...register("email")}
                     />
+                    {errors.email && (
+                      <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+                    )}
                   </div>
+
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
                       Message
@@ -521,15 +545,49 @@ export default function Component() {
                     <textarea
                       id="message"
                       rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent ${
+                        errors.message ? "border-red-500" : "border-gray-300"
+                      }`}
                       placeholder="Your message"
+                      {...register("message")}
                     />
+                    {errors.message && (
+                      <p className="mt-1 text-sm text-red-600">{errors.message.message}</p>
+                    )}
                   </div>
+
                   <button
                     type="submit"
-                    className="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                    disabled={isSubmitting}
+                    className="w-full bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    Send Message
+                    {isSubmitting ? (
+                      <>
+                        <svg
+                          className="animate-spin h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Sending...
+                      </>
+                    ) : (
+                      "Send Message"
+                    )}
                   </button>
                 </form>
               </div>
@@ -544,7 +602,6 @@ export default function Component() {
           <div className="grid md:grid-cols-4 gap-12">
             <div>
               <h3 className="text-2xl font-bold mb-6">Roy Makanjira</h3>
-              
             </div>
 
             <div>
@@ -581,7 +638,6 @@ export default function Component() {
                     Growth Marketing
                   </a>
                 </li>
-                
               </ul>
             </div>
 
