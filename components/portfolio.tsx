@@ -56,7 +56,7 @@ export default function Component() {
               <span>Hey, I'm</span>
               <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden border-4 border-white shadow-xl bg-white">
                 <Image
-                  src="/placeholder.svg?height=96&width=96"
+                  src="/roy.png?height=96&width=96"
                   alt="Steph Curry"
                   width={96}
                   height={96}
@@ -195,10 +195,10 @@ export default function Component() {
     <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent z-10" />
     
     {/* Project Image (Clickable) */}
-    <a href="https://www.figma.com/proto/D0GfI2Kf3RkWnBsRgt7AcI/Royalty-foods-application?page-id=0%3A1&node-id=57-148&starting-point-node-id=57%3A148&t=SdmB5xxBXHkNPd7G-1" target="_blank" rel="noopener noreferrer">
+    <a href="https://www.canva.com/design/DAGsLxhf-yY/ICqxHiXIpnh8NKvQ7XZ0Sw/edit" target="_blank" rel="noopener noreferrer">
       <img
         src="/schweppes.png"
-        alt="Food Delivery App"
+        alt="Schweppes"
         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
       />
     </a>
@@ -247,6 +247,68 @@ export default function Component() {
         className="w-full px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
       >
         Full Report →
+      </button>
+    </div>
+  </CardContent>
+</Card>
+    <Card className="group h-96 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-lg transition-all duration-300 hover:shadow-xl">
+  {/* --- Image with Gradient Overlay --- */}
+  <div className="relative h-56 w-full overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent z-10" />
+    
+    {/* Project Image (Clickable) */}
+    <a href="https://www.canva.com/design/DAGq4J1Gx30/o7zARVvh_kJO8HMEvztLWA/edit?utm_content=DAGq4J1Gx30&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank" rel="noopener noreferrer">
+      <img
+        src="/zimgold.png"
+        alt="ZimGold"
+        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+    </a>
+
+    {/* Decorative Badge (Top-Right) */}
+    <div className="absolute top-4 right-4 z-20">
+      <div className="flex items-center justify-center w-12 h-12 bg-white/90 rounded-full backdrop-blur-sm border border-white">
+        <RocketIcon className="w-5 h-5 text-orange-500" /> {/* Replace with your icon */}
+      </div>
+    </div>
+  </div>
+
+  {/* --- Content with URL Input Option --- */}
+  <CardContent className="p-6">
+    <h3 className="text-2xl font-bold text-gray-900 mb-2">ZimGold</h3>
+    <p className="text-gray-600 mb-4">
+      ZimGold Campaign Strategy
+    </p>
+
+    {/* Project URL Input/Dynamic Link */}
+    <div className="mt-4 space-y-3">
+      {/* Option 1: Static Link (Visible URL) */}
+      <div className="flex items-center">
+        <LinkIcon className="w-4 h-4 text-gray-400 mr-2" />
+        <a 
+          href="https://www.canva.com/design/DAGq4J1Gx30/o7zARVvh_kJO8HMEvztLWA/edit?utm_content=DAGq4J1Gx30&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" 
+          target="_blank" 
+          className="text-sm text-blue-600 hover:underline truncate"
+        >
+          View Link
+        </a>
+      </div>
+
+      {/* Option 2: Input Field (Editable URL) */}
+      {/* <input
+        type="text"
+        placeholder="Paste project URL"
+        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        value={projectUrl}
+        onChange={(e) => setProjectUrl(e.target.value)}
+      /> */}
+
+      {/* CTA Button */}
+      <button 
+        onClick={() => window.open('https://www.canva.com/design/DAGq4J1Gx30/o7zARVvh_kJO8HMEvztLWA/edit?utm_content=DAGq4J1Gx30&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton', '_blank')}
+        className="w-full px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+      >
+        View Link →
       </button>
     </div>
   </CardContent>
@@ -352,7 +414,7 @@ export default function Component() {
                     JD
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900">Jane Doe</h3>
+                    <h3 className="text-lg font-bold text-gray-900">Jane Shumba</h3>
                     <p className="text-gray-600">CEO, TechStart</p>
                   </div>
                 </div>
@@ -370,7 +432,7 @@ export default function Component() {
                     MS
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900">Michael Smith</h3>
+                    <h3 className="text-lg font-bold text-gray-900">Michael S</h3>
                     <p className="text-gray-600">Marketing Director, InnovateCorp</p>
                   </div>
                 </div>
